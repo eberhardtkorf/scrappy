@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body%}
+<nav class="navbar navbar-dark bg-dark">
+
+    <div class="container">
+
+        <span class="navbar-text text-white" >
+            <h1><b><i>Scrappy</i></b></h1>
+        </span>
+
+        <span class="navbar-text text-white">
+            <b><i>GitHub Repository Scraper</i></b>
+            <br>
+            <small>Choose between using the BeautifulSoup library or the API</small>          
+        </span>
+    
+        <form class="d-flex" action="/" method='POST'>
+
+            {% if radioButton == 'BS' %}
+                <div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" value="BS" checked>
+                        <label class="form-check-label text-white" for="flexRadioDefault1">
+                        BeautifulSoup
+                        </label>
+                    </div>
+    
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" value="API">
+                        <label class="form-check-label text-white" for="flexRadioDefault2">
+                        GitHub API
+                        </label>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if radioButton == 'API' %}
+                <div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" value="BS">
+                        <label class="form-check-label text-white" for="flexRadioDefault1">
+                        BeautifulSoup
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" value="API" checked>
+                        <label class="form-check-label text-white" for="flexRadioDefault2">
+                        GitHub API
+                        </label>
+                    </div>
+
+                </div>
+            {% endif %}
+            
+            <label>&nbsp&nbsp&nbsp&nbsp</label>
+
+            
+
+            <input class="form-control me-2" type="search" placeholder="Search for repositories" aria-label="Search" name='searchString'> 
+            <button class="btn btn-primary" type="submit">Search</button>
+
+
+        </form>
+          
+    </div>
+
+</nav>
+
+{% if search_String != '' %}
+    <div class='container'>
+        <br>
+        <label><h2><b> Found {{number}} results for: '{{search_String}}' </b></h2></label>
+
+        {% if radioButton == 'BS' %}
+            <small class="text-muted">Using BeautifulSoup</small>
+        {% endif %}
+        {% if radioButton == 'API' %}
+             <small class="text-muted">Using GitHub API</small>
+        {% endif %}
+
+        <br>
+
+        {% if radioButton == 'API' %}
+
+        <form class="d-flex" action="/" method='POST'>
+
+            <input type="number" value={{numPages}} min="1" max="10" step="1" name='numPages'/>
+            <label>&nbsp</label>
+            <button class="btn btn-secondary" type="submit">Set Number of Pages</button>
+
+            <input type="hidden" name="searchString" value='{{search_String}}' id='hidden1' />
+            <input type="hidden" name="flexRadioDefault" value='API'/>
+
+        </form>
+
+        {% endif %}
+
+        <br>
+
+        {% for result in resultsDic %}
+
+            <div class="card w-500">
+                <div class="card-body">
+                <h5 class="card-title">{{ result['repo_name'] }} </h5>
+
+                {% if result['description'] != None %}
+                    <label class="card-text">{{ result['description'] }}</label>
+                    <br>
+                {% endif %}
+                
+                {% if radioButton == 'BS' %}
+                    {% if result['tags'] != None %}
+                        {% for tag in result['tags'] %}
+                            <span class="badge bg-primary">{{tag}}</span>
+                        {% endfor %}
+                        <br>
+                    {% endif %}
+                {% endif %}
+
+                {% if result['language'] != None %}
+                    <span class="badge bg-info text-dark">{{ result['language'] }}</span>
+                    <br>
+                {% endif %}
+
+                {% if result['license'] != None %}
+                    <span class="badge bg-success"> {{result['license']}} </span>
+                    <br>
+                {% endif %}
+                
+                {% if result['num_stars'] != None %}
+                    <span class="badge rounded-pill bg-warning text-dark">{{ result['num_stars'] }} Stars</span>
+                    <br>
+                {% endif %}
+                
+                
+
+                {% if result['num_issues'] != None %}
+
+                    {% if radioButton == 'BS' %}
+                    <span class="badge rounded-pill bg-danger">{{result['num_issues']}} Issue/s</span>
+                    <br>
+                    {% endif %}
+
+                    {% if radioButton == 'API' %}         
+                        {% if result['has_issues'] == True %}
+                        <span class="badge rounded-pill bg-danger">Has Issues</span>
+                        <br>
+                        {% endif %}
+                    {% endif %}
+                    
+                {% endif %}
+
+                <small class="text-muted">Last updated: {{result['last_updated']}}</small>
+                
+                </div>
+            </div>
+
+            <br>
+
+        {% endfor %}
+
+    </div>
+
+{% endif %}
+
+{% if search_String == '' %}
+    <div class="d-flex align-items-center justify-content-center" style="height: 600px">
+    
+        <div class="alert alert-light" role="alert">
+            Use the search box above to find repositories using either the BeautifulSoup library or the Github API. Results will be shown here.
+        </div>
+
+    </div>
+
+{% endif %}
+
+{% endblock %}
+
+

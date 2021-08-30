@@ -1,7 +1,5 @@
 # WebDev Project 1, Scrappy
 
-## Disclaimer: This entire project was made on a MAC machine. I know the commands mentioned below will work on a MAC, I am unsure whether they are the same for a WINDOWS Machine.
-
 ### Overview
 
 This repository contains two main .py files, namely `scraper.py` and `scrappy.py`.
